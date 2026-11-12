@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="robots" content="noindex,nofollow"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>物件一覧</title>
+<style>
+:root{--bg:#f4f6fa;--card:#fff;--ink:#1d2433;--mute:#6b7488;--line:#e2e6ee;--accent:#1f5fbf;--accent2:#e8f0fc}
+@media(prefers-color-scheme:dark){:root{--bg:#12161f;--card:#1a2030;--ink:#e7ebf4;--mute:#97a0b5;--line:#2a3247;--accent:#6ea2f5;--accent2:#1f2b45}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 -apple-system,"Hiragino Sans",Meiryo,sans-serif}
+header{padding:24px 16px 8px;max-width:1200px;margin:auto}h1{margin:0 0 4px;font-size:22px}
+.sub{color:var(--mute);font-size:13px}
+.stats{display:flex;gap:12px;flex-wrap:wrap;margin:14px 0}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px}
+.stat b{display:block;font-size:20px}.stat span{font-size:12px;color:var(--mute)}
+.tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+input[type=search]{flex:1;min-width:200px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);font-size:15px}
+select{padding:10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink)}
+main{max-width:1200px;margin:auto;padding:8px 16px 60px}
+section{background:var(--card);border:1px solid var(--line);border-radius:12px;margin:16px 0;overflow:hidden}
+.gh{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:center;padding:12px 16px;background:var(--accent2);border-bottom:1px solid var(--line)}
+.gh h2{margin:0;font-size:16px}.gh small{color:var(--mute)}
+.gh a{color:var(--accent);font-size:13px;text-decoration:none}
+.tw{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:760px}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line);vertical-align:middle}
+th{font-size:12px;color:var(--mute);font-weight:600;white-space:nowrap}
+td.n,th.n{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+tr:last-child td{border-bottom:0}tbody tr:hover{background:var(--accent2)}
+.th{width:64px;height:90px;object-fit:cover;object-position:top;border:1px solid var(--line);border-radius:4px;cursor:zoom-in;display:block;background:#fff;transition:transform .15s}
+.th:hover{transform:scale(1.08)}
+.nm{font-weight:600}
+.tot td{background:var(--accent2);font-weight:600}
+#lb{position:fixed;inset:0;background:rgba(0,0,0,.82);display:none;z-index:10;flex-direction:column;align-items:center}
+#lb.on{display:flex}
+#lbt{color:#fff;padding:12px 56px;text-align:center;font-size:14px}
+#lbw{flex:1;overflow:auto;width:100%;display:flex;justify-content:center;padding:0 8px 16px}
+#lbi{max-width:100%;height:auto;align-self:flex-start;background:#fff;box-shadow:0 4px 30px #000a;cursor:zoom-in}
+#lbi.z{max-width:none;width:1500px;cursor:zoom-out}
+.b{position:absolute;background:#0008;color:#fff;border:0;width:44px;height:44px;border-radius:50%;font-size:22px;cursor:pointer}
+#x{top:8px;right:8px}#pv{left:8px;top:50%}#nx{right:8px;top:50%}
+@media(max-width:600px){h1{font-size:18px}}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:12px;margin-top:12px}
+.fg{display:grid;grid-template-columns:76px 1fr;gap:10px;align-items:start;padding:12px 14px;border-bottom:1px solid var(--line)}
+#fb .fg:last-child{border-bottom:0}
+.panel>.fg:first-child{background:var(--accent2);border-radius:12px 12px 0 0}
+.fg>b{font-size:13px;padding-top:6px}
+.cs,.cl{display:flex;flex-wrap:wrap;gap:8px;align-items:center;min-width:0}
+.gc{display:flex;gap:6px;align-items:center;font-size:14px;white-space:nowrap;cursor:pointer;margin-right:8px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--card);flex-wrap:wrap}
+.seg button{border:0;background:none;color:var(--ink);padding:7px 14px;font-size:13px;cursor:pointer;font-family:inherit;border-right:1px solid var(--line)}
+.seg button:last-child{border-right:0}
+.seg button.on{background:var(--accent);color:#fff}
+.chip{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;padding:7px 12px;font-size:13px;cursor:pointer;font-family:inherit;display:inline-flex;gap:6px;align-items:center}
+.chip i{font-style:normal;font-size:11px;color:var(--mute)}
+.chip:hover{border-color:var(--accent)}
+.chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.chip.on::before{content:"✓"}.chip.on i{color:#fff;opacity:.85}
+@media(max-width:600px){.fg{grid-template-columns:1fr;gap:6px}.fg>b{padding-top:0}.cs{width:100%}.seg{display:grid;grid-template-columns:repeat(3,1fr);width:100%}.seg button{padding:9px 2px;font-size:12px}}
+.fs{display:flex;gap:12px;align-items:center;margin-top:8px;font-size:13px;color:var(--mute)}
+#clr{border:0;background:none;color:var(--accent);cursor:pointer;font-size:13px;padding:0}
+.lock{max-width:380px;margin:18vh auto 0;padding:24px 20px;background:var(--card);border:1px solid var(--line);border-radius:12px}
+.lock h1{font-size:18px;margin:0 0 6px}.lock p{margin:0 0 14px;font-size:13px;color:var(--mute)}
+.lock input{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font-size:16px}
+.lock button{margin-top:12px;width:100%;padding:11px;border:0;border-radius:8px;background:var(--accent);color:#fff;font-size:15px;cursor:pointer}
+.lock button:disabled{opacity:.6}#err{min-height:20px;color:#c0392b;font-size:13px;margin-top:8px}
+</style></head><body><div class="lock" id="lock"><h1>パスワードを入力</h1><p>共有されたパスワードを入力してください。</p><form id="lf"><input id="pw" type="password" autocomplete="current-password" placeholder="パスワード" autofocus><button id="go" type="submit">開く</button><div id="err"></div></form></div><div id="app" hidden>
+<header><h1>共済契約 物件一覧</h1>
+<div class="sub" id="sub"></div>
+<div class="stats" id="stats"></div>
+<div class="tools"><input id="q" type="search" placeholder="物件名・住所・証書番号で検索"></div>
+<div class="panel"><div class="fg"><b>表示</b><div class="cs"><label class="gc"><input type="checkbox" id="gp" checked> 証書ごとにまとめる</label><span class="seg" id="seg"><button type="button" data-v="" class="on">標準</button><button type="button" data-v="end">満了日が近い順</button><button type="button" data-v="amt">保険金額が大きい順</button></span></div></div><select id="s" hidden><option value=""></option><option value="end"></option><option value="amt"></option></select><div id="fb"></div></div><div class="fs"><span id="cnt"></span><button id="clr" hidden>絞り込みをすべて解除</button></div>
+</header><main id="m"></main>
+<div id="lb"><div id="lbt"></div><button class="b" id="x">✕</button><button class="b" id="pv">‹</button><button class="b" id="nx">›</button><div id="lbw"><img id="lbi" alt=""></div></div>
+</div>
+<script>
+const SALT="624475235d0d71b0a8fa39b917c850a6",ITER=600000,enc=new TextEncoder(),CACHE=new Map();let KEY=null;
+const hex=b=>[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("");
+async function dec(buf){const u=new Uint8Array(buf);return crypto.subtle.decrypt({name:"AES-GCM",iv:u.slice(0,12)},KEY,u.slice(12))}
+function imgUrl(key){if(!CACHE.has(key))CACHE.set(key,(async()=>{const h=hex(await crypto.subtle.digest("SHA-256",enc.encode(SALT+key))).slice(0,24);const r=await fetch("d/"+h+".bin");if(!r.ok)throw 0;return URL.createObjectURL(new Blob([await dec(await r.arrayBuffer())],{type:"image/jpeg"}))})());return CACHE.get(key)}
+function hydrate(){document.querySelectorAll("img.th:not([src])").forEach(i=>imgUrl(i.dataset.key).then(u=>{i.src=u}).catch(()=>{}))}
+async function unlock(pw){const norm=pw.replace(/[\s-]/g,"").toLowerCase();
+const base=await crypto.subtle.importKey("raw",enc.encode(norm),"PBKDF2",false,["deriveKey"]);
+const salt=new Uint8Array(SALT.match(/../g).map(x=>parseInt(x,16)));
+KEY=await crypto.subtle.deriveKey({name:"PBKDF2",salt,iterations:ITER,hash:"SHA-256"},base,{name:"AES-GCM",length:256},false,["decrypt"]);
+const r=await fetch("d/data.bin");const d=JSON.parse(new TextDecoder().decode(await dec(await r.arrayBuffer())));
+return d}
+const lk=document.getElementById("lock"),app=document.getElementById("app"),pwi=document.getElementById("pw"),er=document.getElementById("err"),bt=document.getElementById("go");
+async function tryPw(pw,auto){bt.disabled=true;er.textContent=auto?"":"確認中…";
+try{const d=await unlock(pw);try{sessionStorage.setItem("k",pw)}catch(e){}
+document.getElementById("sub").textContent=d.sub;lk.hidden=true;app.hidden=false;start(d.G)}
+catch(e){KEY=null;try{sessionStorage.removeItem("k")}catch(_){}er.textContent=auto?"":"パスワードが違います";bt.disabled=false}}
+document.getElementById("lf").onsubmit=e=>{e.preventDefault();if(pwi.value.trim())tryPw(pwi.value,false)};
+{let p="";try{p=decodeURIComponent(location.hash.slice(1))}catch(e){}
+if(!p){try{p=sessionStorage.getItem("k")||""}catch(e){}}
+if(p)tryPw(p,true)}
+function start(G){
+const fd=s=>s.replace(/-0?/g,(m,i)=>i==4?"/":"/").replace(/\/(\d+)$/,"/$1");
+const jd=s=>{const[a,b,c]=s.split("-");return `${a}/${+b}/${+c}`};
+const yen=n=>n.toLocaleString("ja-JP");
+const rows=[];G.forEach(g=>g.p.forEach((p,i)=>rows.push({g,name:p[0],addr:p[1],city:p[1].startsWith('北群馬郡')?'榛東村':p[1].split('市')[0]+'市',amt:p[2]*1000,prem:p[3],page:g.single?1:i+2,idx:i+1})));
+const m=document.getElementById("m"),q=document.getElementById("q"),sel=document.getElementById("s");
+let cur=[];
+const F={city:new Set(),cert:new Set(),amt:new Set()};
+const BK=[["1,500万円未満",a=>a<15e6],["1,500万〜2,000万円未満",a=>a>=15e6&&a<2e7],["2,000万円以上",a=>a>=2e7]];
+const CITIES=[...new Set(rows.map(r=>r.city))];
+const dts=[...new Set(G.map(g=>g.to))].sort();
+const cnt=(f)=>rows.filter(f).length;
+const GRP=[["city","市町村",CITIES.map(c=>[c,c,cnt(r=>r.city==c)])],["cert","満了日",dts.map(d=>[d,jd(d)+" 満了",cnt(r=>r.g.to==d)])],["amt","保険金額",BK.map((b,i)=>[i,b[0],cnt(r=>b[1](r.amt))])]];
+document.getElementById("fb").innerHTML=GRP.map(([k,l,o])=>`<div class="fg"><b>${l}</b><div class="cl">${o.map(([v,t,n])=>`<button type="button" class="chip" data-k="${k}" data-v="${v}">${t}<i>${n}</i></button>`).join("")}</div></div>`).join("");
+document.getElementById("seg").onclick=e=>{const b=e.target.closest("button");if(!b)return;sel.value=b.dataset.v;document.querySelectorAll("#seg button").forEach(x=>x.classList.toggle("on",x===b));render()};
+document.getElementById("fb").onclick=e=>{const c=e.target.closest(".chip");if(!c)return;const k=c.dataset.k,v=k=="amt"?+c.dataset.v:c.dataset.v;F[k].has(v)?F[k].delete(v):F[k].add(v);c.classList.toggle("on");render()};
+document.getElementById("clr").onclick=()=>{Object.values(F).forEach(x=>x.clear());document.querySelectorAll(".chip.on").forEach(c=>c.classList.remove("on"));render()};
+function stats(){const t=rows.reduce((a,r)=>a+r.amt,0),pr=rows.reduce((a,r)=>a+r.prem,0);
+document.getElementById("stats").innerHTML=`<div class="stat"><b>${G.length}</b><span>証書</span></div><div class="stat"><b>${rows.length}</b><span>物件</span></div><div class="stat"><b>${yen(t/10000)}万円</b><span>保険金額 合計</span></div><div class="stat"><b>${yen(pr)}円</b><span>掛金 合計（5年一括）</span></div>`}
+function row(r){const k=cur.length;cur.push(r);
+return `<tr><td><img class="th" data-key="${r.g.id}_${r.page}_t" data-k="${k}" alt="${r.name}"></td><td class="nm">${r.name}</td><td>${r.addr}</td><td>${jd(r.g.from)} 〜 ${jd(r.g.to)}<br><small class="sub">5年間</small></td><td class="n">${yen(r.amt)}円</td><td class="n">${yen(r.prem)}円</td></tr>`}
+const head=`<thead><tr><th>画像</th><th>物件名</th><th>所在地</th><th>保険期間</th><th class="n">保険金額</th><th class="n">掛金(一括)</th></tr></thead>`;
+function render(){cur=[];const t=q.value.trim().toLowerCase(),mode=sel.value;
+const match=r=>(!t||(r.name+r.addr+r.g.no).toLowerCase().includes(t))&&(!F.city.size||F.city.has(r.city))&&(!F.cert.size||F.cert.has(r.g.to))&&(!F.amt.size||[...F.amt].some(i=>BK[i][1](r.amt)));
+const n=rows.filter(match).length,on=F.city.size+F.cert.size+F.amt.size>0;
+document.getElementById("cnt").textContent=`${rows.length}件中 ${n}件を表示`;document.getElementById("clr").hidden=!on;
+let h="";
+const cmp=mode=="amt"?(x,y)=>y.amt-x.amt:null;
+if(!document.getElementById("gp").checked){let l=rows.filter(match);
+if(mode=="end")l.sort((x,y)=>x.g.to.localeCompare(y.g.to));else if(cmp)l.sort(cmp);
+h=`<section><div class="tw"><table>${head}<tbody>${l.map(row).join("")}</tbody></table></div></section>`}
+else{let gs=G.map(g=>({g,l:rows.filter(r=>r.g===g&&match(r))})).filter(x=>x.l.length);
+if(mode=="end")gs.sort((x,y)=>x.g.to.localeCompare(y.g.to));
+if(mode=="amt")gs.sort((x,y)=>y.l.reduce((a,r)=>a+r.amt,0)-x.l.reduce((a,r)=>a+r.amt,0));
+gs.forEach(({g,l})=>{if(cmp)l.sort(cmp);
+const sa=l.reduce((a,r)=>a+r.amt,0),sp=l.reduce((a,r)=>a+r.prem,0);
+h+=`<section><div class="gh"><div><h2>証書番号 ${g.no}　<small>${jd(g.from)} 〜 ${jd(g.to)}（${g.p.length}物件）</small></h2></div><a href="https://drive.google.com/file/d/${g.id}/view" target="_blank">元のPDFを開く（Drive）</a></div><div class="tw"><table>${head}<tbody>${l.map(row).join("")}<tr class="tot"><td></td><td colspan="3">小計</td><td class="n">${yen(sa)}円</td><td class="n">${yen(sp)}円</td></tr></tbody></table></div></section>`})}
+m.innerHTML=h||'<p class="sub">該当なし</p>';hydrate()}
+const lb=document.getElementById("lb"),im=document.getElementById("lbi"),tt=document.getElementById("lbt");let k=0;
+function show(i){k=(i+cur.length)%cur.length;const r=cur[k];im.classList.remove("z");const my=k;im.removeAttribute('src');imgUrl(`${r.g.id}_${r.page}_l`).then(u=>{if(my===k)im.src=u});
+tt.textContent=`${r.name}｜${r.addr}｜${yen(r.amt)}円｜${k+1}/${cur.length}`;lb.classList.add("on");document.getElementById("lbw").scrollTop=0}
+m.onclick=e=>{if(e.target.classList.contains("th"))show(+e.target.dataset.k)};
+document.getElementById("x").onclick=()=>lb.classList.remove("on");
+document.getElementById("pv").onclick=()=>show(k-1);document.getElementById("nx").onclick=()=>show(k+1);
+im.onclick=()=>im.classList.toggle("z");
+lb.onclick=e=>{if(e.target===lb||e.target.id=="lbw")lb.classList.remove("on")};
+addEventListener("keydown",e=>{if(!lb.classList.contains("on"))return;if(e.key=="Escape")lb.classList.remove("on");if(e.key=="ArrowLeft")show(k-1);if(e.key=="ArrowRight")show(k+1)});
+q.oninput=render;sel.onchange=render;document.getElementById('gp').onchange=render;stats();render();
+
+}
+</script></body></html>
